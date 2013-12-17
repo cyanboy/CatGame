@@ -1,91 +1,122 @@
-
-//
-// Disclamer:
-// ----------
-//
-// This code will work only if you selected window, graphics and audio.
-//
-// Note that the "Run Script" build phase will copy the required frameworks
-// or dylibs to your application bundle so you can execute it on any OS X
-// computer.
-//
-// Your resource files (images, sounds, fonts, ...) are also copied to your
-// application bundle. To get the path to these resource, use the helper
-// method resourcePath() from ResourcePath.hpp
-//
-
-#include <SFML/Audio.hpp>
+#include <iostream>
+#include <ctime>
 #include <SFML/Graphics.hpp>
-
-// Here is a small helper for you ! Have a look.
 #include "ResourcePath.hpp"
 
-int main(int, char const**)
+class Game {
+public:
+    Game();
+    void run();
+private:
+    void processEvents();
+    void update();
+    void render();
+    void handlePlayerInput(sf::Keyboard::Key key, bool pressed);
+    
+    sf::RenderWindow _window;
+    sf::Texture _playerTexture;
+    sf::Texture _stickTexture;
+    sf::Sprite _player;
+    sf::Sprite _stick;
+    
+    bool _movingUp, _movingLeft, _movingDown, _movingRight;
+};
+
+
+Game::Game()
+: _window(sf::VideoMode(640,480), "CatGame"),
+_player(),
+_playerTexture(),
+_stickTexture(),
+_movingUp(),
+_movingLeft(),
+_movingDown(),
+_movingRight()
 {
-    // Create the main window
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
-
-    // Set the Icon
-    sf::Image icon;
-    if (!icon.loadFromFile(resourcePath() + "icon.png")) {
-        return EXIT_FAILURE;
+    if (!_playerTexture.loadFromFile(resourcePath() + "player.png") ){
+        //errno
     }
-    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
-
-    // Load a sprite to display
-    sf::Texture texture;
-    if (!texture.loadFromFile(resourcePath() + "cute_image.jpg")) {
-        return EXIT_FAILURE;
+    
+    if (!_stickTexture.loadFromFile(resourcePath() + "stick.png") ){
+        //errno
     }
-    sf::Sprite sprite(texture);
+    
+    _player.setTexture(_playerTexture);
+    _stick.setTexture(_stickTexture);
+    
+    _player.setPosition(100.f, 100.f);
+    _stick.setPosition(rand() % 640-35, rand() % 480-35);
+    
+    _window.setFramerateLimit(50);
+}
 
-    // Create a graphical text to display
-    sf::Font font;
-    if (!font.loadFromFile(resourcePath() + "sansation.ttf")) {
-        return EXIT_FAILURE;
+void Game::run() {
+    while (_window.isOpen()) {
+        processEvents();
+        update();
+        render();
     }
-    sf::Text text("Hello SFML", font, 50);
-    text.setColor(sf::Color::Black);
+}
 
-    // Load a music to play
-    sf::Music music;
-    if (!music.openFromFile(resourcePath() + "nice_music.ogg")) {
-        return EXIT_FAILURE;
-    }
-
-    // Play the music
-    music.play();
-
-    // Start the game loop
-    while (window.isOpen())
-    {
-        // Process events
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            // Close window : exit
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
-
-            // Escape pressed : exit
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
-                window.close();
-            }
+void Game::processEvents() {
+    sf::Event event;
+    while (_window.pollEvent(event)) {
+        switch (event.type) {
+            case sf::Event::KeyPressed:
+                handlePlayerInput(event.key.code, true);
+                break;
+            case sf::Event::KeyReleased:
+                handlePlayerInput(event.key.code, false);
+                break;
+            case sf::Event::Closed:
+                _window.close();
+                break;
+            default:
+                break;
         }
-
-        // Clear screen
-        window.clear();
-
-        // Draw the sprite
-        window.draw(sprite);
-
-        // Draw the string
-        window.draw(text);
-
-        // Update the window
-        window.display();
     }
+}
 
-    return EXIT_SUCCESS;
+void Game::handlePlayerInput(sf::Keyboard::Key key, bool pressed) {
+    if(key == sf::Keyboard::Up) {
+        _movingUp = pressed;
+    } else if(key == sf::Keyboard::Down) {
+        _movingDown = pressed;
+    } else if(key == sf::Keyboard::Left) {
+        _movingLeft = pressed;
+    } else if(key == sf::Keyboard::Right) {
+        _movingRight = pressed;
+    }
+}
+
+void Game::update() {
+    sf::Vector2f movement(0.f, 0.f);
+    float speed{2.f};
+    
+    if(_movingUp)
+        movement.y -= speed;
+    else if(_movingLeft)
+        movement.x -= speed;
+    else if(_movingDown)
+        movement.y += speed;
+    else if(_movingRight)
+        movement.x += speed;
+    
+    _player.move(movement);
+}
+
+void Game::render() {
+    _window.clear();
+    
+    _window.draw(_stick);
+    _window.draw(_player);
+
+    _window.display();
+}
+
+int main()
+{
+    srand(time(nullptr));
+    Game cats;
+    cats.run();
 }

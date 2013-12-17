@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8D0FC6A9185FB6A100A3AAB8 /* player.png in Resources */ = {isa = PBXBuildFile; fileRef = 8D0FC6A8185FB6A100A3AAB8 /* player.png */; };
+		8D0FC6AB185FBDAE00A3AAB8 /* stick.png in Resources */ = {isa = PBXBuildFile; fileRef = 8D0FC6AA185FBDAE00A3AAB8 /* stick.png */; };
 		8D3BBAD7185F582600AF3007 /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8D3BBAD6185F582600AF3007 /* ResourcePath.mm */; };
 		8D3BBADA185F582600AF3007 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8D3BBAD9185F582600AF3007 /* main.cpp */; };
 		8D3BBADD185F582600AF3007 /* cute_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 8D3BBADC185F582600AF3007 /* cute_image.jpg */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8D0FC6A8185FB6A100A3AAB8 /* player.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = player.png; sourceTree = "<group>"; };
+		8D0FC6AA185FBDAE00A3AAB8 /* stick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stick.png; sourceTree = "<group>"; };
 		8D3BBAD1185F582500AF3007 /* CatGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CatGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D3BBAD5185F582600AF3007 /* CatGame-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CatGame-Info.plist"; sourceTree = "<group>"; };
 		8D3BBAD6185F582600AF3007 /* ResourcePath.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
@@ -77,6 +81,8 @@
 		8D3BBADB185F582600AF3007 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8D0FC6AA185FBDAE00A3AAB8 /* stick.png */,
+				8D0FC6A8185FB6A100A3AAB8 /* player.png */,
 				8D3BBADC185F582600AF3007 /* cute_image.jpg */,
 				8D3BBADE185F582600AF3007 /* nice_music.ogg */,
 				8D3BBAE0185F582600AF3007 /* sansation.ttf */,
@@ -138,8 +144,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D3BBAE3185F582600AF3007 /* icon.png in Resources */,
+				8D0FC6A9185FB6A100A3AAB8 /* player.png in Resources */,
 				8D3BBAE1185F582600AF3007 /* sansation.ttf in Resources */,
 				8D3BBADF185F582600AF3007 /* nice_music.ogg in Resources */,
+				8D0FC6AB185FBDAE00A3AAB8 /* stick.png in Resources */,
 				8D3BBADD185F582600AF3007 /* cute_image.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -314,6 +322,7 @@
 				8D3BBAE8185F582600AF3007 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
