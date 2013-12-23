@@ -1,7 +1,12 @@
 #include <iostream>
+#include <string>
+
 #include <ctime>
 #include <cmath>
+
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
+
 #include "ResourcePath.hpp"
 
 class Game {
@@ -17,6 +22,8 @@ private:
     sf::RenderWindow _window;
     sf::Texture _playerTexture, _stickTexture;
     sf::Sprite _player, _stick;
+    sf::Font font;
+    sf::Text scoreTxt;
     
     bool _movingUp, _movingLeft, _movingDown, _movingRight;
     int score;
@@ -32,7 +39,9 @@ _movingUp(),
 _movingLeft(),
 _movingDown(),
 _movingRight(),
-score()
+font(),
+score(),
+scoreTxt()
 {
     if (!_playerTexture.loadFromFile(resourcePath() + "player.png") ){
         //errno
@@ -42,11 +51,20 @@ score()
         //errno
     }
     
+    if(!font.loadFromFile(resourcePath() + "Arial.ttf") ) {
+        //errno
+    }
+    
     _player.setTexture(_playerTexture);
     _stick.setTexture(_stickTexture);
     _player.setPosition(100.f, 100.f);
     _stick.setPosition(rand() % 630-35, rand() % 470-35);
     _window.setFramerateLimit(50);
+    
+    scoreTxt.setFont(font);
+    scoreTxt.setCharacterSize(24);
+    scoreTxt.setString("Score: " + std::to_string(score));
+    scoreTxt.setColor(sf::Color::White);
 }
 
 void Game::run() { //This is
@@ -72,7 +90,7 @@ void Game::processEvents() {
                 break;
             default:
                 break;
-                //Nothing to do here;//Derp herp HI SNEAKYSNAKE!
+                //Nothing to do here;
         }
     }
 }
@@ -111,9 +129,10 @@ void Game::update() {
     
     _player.move(movement); //move the player
     
+    /* collision */
     if(_player.getGlobalBounds().intersects(_stick.getGlobalBounds())) {
         score++;
-        
+        scoreTxt.setString("Score: " + std::to_string(score));
         _stick.setPosition( //Make sure the stick does not move out of bounds
             std::rand() % (640 - static_cast<int>(_stick.getGlobalBounds().width)),
             std::rand() % (480 - static_cast<int>(_stick.getGlobalBounds().height))
@@ -126,6 +145,7 @@ void Game::render() {
     _window.clear();
     _window.draw(_stick);
     _window.draw(_player);
+    _window.draw(scoreTxt);
     _window.display();
 }
 
