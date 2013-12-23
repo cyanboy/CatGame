@@ -100,11 +100,17 @@ void Game::update() {
     /* Movement */
     if(_movingUp) {
         movement.y -= speed; //up
-    } else if(_movingLeft) {
+    }
+    
+    if(_movingLeft) {
         movement.x -= speed; //left
-    } else if(_movingDown) {
+    }
+    
+    if(_movingDown) {
         movement.y += speed; //down
-    } else if(_movingRight) {
+    }
+    
+    if(_movingRight) {
         movement.x += speed; //right
     }
     
