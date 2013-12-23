@@ -15,18 +15,16 @@ private:
     void handlePlayerInput(sf::Keyboard::Key key, bool pressed);
     
     sf::RenderWindow _window;
-    sf::Texture _playerTexture;
-    sf::Texture _stickTexture;
-    sf::Sprite _player;
-    sf::Sprite _stick;
+    sf::Texture _playerTexture, _stickTexture;
+    sf::Sprite _player, _stick;
     
     bool _movingUp, _movingLeft, _movingDown, _movingRight;
     int score;
 };
 
-
 Game::Game()
-: _window(sf::VideoMode(640,480), "CatGame"),
+:
+_window(sf::VideoMode(640,480), "CatGame"),
 _player(),
 _playerTexture(),
 _stickTexture(),
@@ -46,10 +44,8 @@ score()
     
     _player.setTexture(_playerTexture);
     _stick.setTexture(_stickTexture);
-    
     _player.setPosition(100.f, 100.f);
     _stick.setPosition(rand() % 630-35, rand() % 470-35);
-    
     _window.setFramerateLimit(50);
 }
 
@@ -99,17 +95,14 @@ void Game::update() {
     sf::Vector2f movement{0.f, 0.f};
    
     float speed{5.f}; //speed of the player
-    
-    /* Movement */
-    
 
-    if(_movingUp)
+    if(_movingUp && _player.getPosition().y > 0)
         movement.y -= speed; //up
-    if(_movingLeft)
+    if(_movingLeft && _player.getPosition().x > 0)
         movement.x -= speed; //left
-    if(_movingDown)
+    if(_movingDown && _player.getPosition().y < (480 - static_cast<int>(_player.getGlobalBounds().height)))
         movement.y += speed; //down
-    if(_movingRight)
+    if(_movingRight && _player.getPosition().x < (640 - static_cast<int>(_player.getGlobalBounds().width)))
         movement.x += speed; //right
     
     //Pythagoras or something
@@ -121,26 +114,18 @@ void Game::update() {
     if(_player.getGlobalBounds().intersects(_stick.getGlobalBounds())) {
         score++;
         
-        _stick.setPosition( //Make sure the stick does not move out of bounds 
+        _stick.setPosition( //Make sure the stick does not move out of bounds
             std::rand() % (640 - static_cast<int>(_stick.getGlobalBounds().width)),
             std::rand() % (480 - static_cast<int>(_stick.getGlobalBounds().height))
         );
-        
-        //play sound
     }
-    
-    //std::cout << score << std::endl;
-    
+
 }
 
 void Game::render() {
     _window.clear();
-    
-    /* Draw to screen */
-
     _window.draw(_stick);
     _window.draw(_player);
-
     _window.display();
 }
 
