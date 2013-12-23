@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ctime>
+#include <cmath>
 #include <SFML/Graphics.hpp>
 #include "ResourcePath.hpp"
 
@@ -45,7 +46,7 @@ _movingRight()
     _stick.setTexture(_stickTexture);
     
     _player.setPosition(100.f, 100.f);
-    _stick.setPosition(rand() % 640-35, rand() % 480-35);
+    _stick.setPosition(rand() % 630-35, rand() % 470-35);
     
     _window.setFramerateLimit(50);
 }
@@ -95,24 +96,23 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool pressed) {
 void Game::update() {
     sf::Vector2f movement{0.f, 0.f};
    
-    float speed{2.f}; //speed of the player
+    float speed{5.f}; //speed of the player
     
     /* Movement */
-    if(_movingUp) {
+    
+
+    if(_movingUp)
         movement.y -= speed; //up
-    }
-    
-    if(_movingLeft) {
+    if(_movingLeft)
         movement.x -= speed; //left
-    }
-    
-    if(_movingDown) {
+    if(_movingDown)
         movement.y += speed; //down
-    }
-    
-    if(_movingRight) {
+    if(_movingRight)
         movement.x += speed; //right
-    }
+    
+    //Pythagoras or something
+    if (movement.x != 0.f && movement.y != 0.f)
+        movement /= std::sqrt(2.f);
     
     _player.move(movement); //move the player
 }
@@ -121,6 +121,7 @@ void Game::render() {
     _window.clear();
     
     /* Draw to screen */
+
     _window.draw(_stick);
     _window.draw(_player);
 
