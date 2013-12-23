@@ -50,7 +50,7 @@ _movingRight()
     _window.setFramerateLimit(50);
 }
 
-void Game::run() {
+void Game::run() { //This is
     while (_window.isOpen()) {
         processEvents();
         update();
@@ -73,11 +73,14 @@ void Game::processEvents() {
                 break;
             default:
                 break;
+                //Nothing to do here;//Derp herp HI SNEAKYSNAKE!
         }
     }
 }
 
 void Game::handlePlayerInput(sf::Keyboard::Key key, bool pressed) {
+    /*If clause for the player keyboard events (derp) */
+
     if(key == sf::Keyboard::Up) {
         _movingUp = pressed;
     } else if(key == sf::Keyboard::Down) {
@@ -90,24 +93,28 @@ void Game::handlePlayerInput(sf::Keyboard::Key key, bool pressed) {
 }
 
 void Game::update() {
-    sf::Vector2f movement(0.f, 0.f);
-    float speed{2.f};
+    sf::Vector2f movement{0.f, 0.f};
+   
+    float speed{2.f}; //speed of the player
     
-    if(_movingUp)
-        movement.y -= speed;
-    else if(_movingLeft)
-        movement.x -= speed;
-    else if(_movingDown)
-        movement.y += speed;
-    else if(_movingRight)
-        movement.x += speed;
+    /* Movement */
+    if(_movingUp) {
+        movement.y -= speed; //up
+    } else if(_movingLeft) {
+        movement.x -= speed; //left
+    } else if(_movingDown) {
+        movement.y += speed; //down
+    } else if(_movingRight) {
+        movement.x += speed; //right
+    }
     
-    _player.move(movement);
+    _player.move(movement); //move the player
 }
 
 void Game::render() {
     _window.clear();
     
+    /* Draw to screen */
     _window.draw(_stick);
     _window.draw(_player);
 
@@ -116,7 +123,7 @@ void Game::render() {
 
 int main()
 {
-    srand(time(nullptr));
-    Game cats;
+    srand(time(nullptr)); //Seed random number generator
+    Game cats{};
     cats.run();
 }
