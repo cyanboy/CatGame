@@ -21,6 +21,7 @@ private:
     sf::Sprite _stick;
     
     bool _movingUp, _movingLeft, _movingDown, _movingRight;
+    int score;
 };
 
 
@@ -32,7 +33,8 @@ _stickTexture(),
 _movingUp(),
 _movingLeft(),
 _movingDown(),
-_movingRight()
+_movingRight(),
+score()
 {
     if (!_playerTexture.loadFromFile(resourcePath() + "player.png") ){
         //errno
@@ -115,6 +117,20 @@ void Game::update() {
         movement /= std::sqrt(2.f);
     
     _player.move(movement); //move the player
+    
+    if(_player.getGlobalBounds().intersects(_stick.getGlobalBounds())) {
+        score++;
+        
+        _stick.setPosition( //Make sure the stick does not move out of bounds 
+            std::rand() % (640 - static_cast<int>(_stick.getGlobalBounds().width)),
+            std::rand() % (480 - static_cast<int>(_stick.getGlobalBounds().height))
+        );
+        
+        //play sound
+    }
+    
+    //std::cout << score << std::endl;
+    
 }
 
 void Game::render() {
@@ -130,7 +146,7 @@ void Game::render() {
 
 int main()
 {
-    srand(time(nullptr)); //Seed random number generator
+    std::srand(time(nullptr)); //Seed random number generator
     Game cats{};
     cats.run();
 }
