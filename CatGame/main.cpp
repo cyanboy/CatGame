@@ -22,6 +22,8 @@ private:
     sf::Font _font;
     sf::Text _scoreTxt;
     sf::Music _music;
+    sf::SoundBuffer _buffer;
+    sf::Sound _sound;
     
     bool _movingUp, _movingLeft, _movingDown, _movingRight;
     int _score;
@@ -39,7 +41,9 @@ _movingRight(),
 _font(),
 _score(),
 _scoreTxt(),
-_music()
+_music(),
+_buffer(),
+_sound()
 {
     if (!_playerTexture.loadFromFile(resourcePath() + "player.png") ){
         //errno
@@ -57,6 +61,11 @@ _music()
         //errno
     }
     
+    if(!_buffer.loadFromFile(resourcePath() + "stick.wav")) {
+        //errno
+    }
+    
+    _sound.setBuffer(_buffer);
     _player.setTexture(_playerTexture);
     _stick.setTexture(_stickTexture);
     _player.setPosition(100.f, 100.f);
@@ -152,6 +161,7 @@ void Game::update() {
     
     /* collision */
     if(_player.getGlobalBounds().intersects(_stick.getGlobalBounds())) {
+        _sound.play();
         _score++;
         _scoreTxt.setString("Score: " + std::to_string(_score));
         _stick.setPosition(std::rand() % (640 - static_cast<int>(_stick.getGlobalBounds().width)),
