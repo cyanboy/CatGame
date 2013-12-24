@@ -19,12 +19,13 @@ private:
     sf::RenderWindow _window;
     sf::Texture _playerTexture, _stickTexture;
     sf::Sprite _player, _stick;
-    sf::Font font;
-    sf::Text scoreTxt;
-    sf::Music music;
+    sf::Font _font;
+    sf::Text _scoreTxt;
+    sf::Music _music;
     
     bool _movingUp, _movingLeft, _movingDown, _movingRight;
-    int score;
+    bool pause;
+    int _score;
 };
 
 Game::Game():
@@ -36,10 +37,10 @@ _movingUp(),
 _movingLeft(),
 _movingDown(),
 _movingRight(),
-font(),
-score(),
-scoreTxt(),
-music()
+_font(),
+_score(),
+_scoreTxt(),
+_music()
 {
     if (!_playerTexture.loadFromFile(resourcePath() + "player.png") ){
         //errno
@@ -49,11 +50,11 @@ music()
         //errno
     }
     
-    if(!font.loadFromFile(resourcePath() + "Arial.ttf") ) {
+    if(!_font.loadFromFile(resourcePath() + "Arial.ttf") ) {
         //errno
     }
     
-    if(!music.openFromFile(resourcePath() + "music.ogg") ) {
+    if(!_music.openFromFile(resourcePath() + "music.ogg") ) {
         //errno
     }
     
@@ -62,22 +63,37 @@ music()
     _player.setPosition(100.f, 100.f);
     _stick.setPosition(rand() % 630-35, rand() % 470-35);
     _window.setFramerateLimit(50);
-    music.setLoop(true);
+    _music.setLoop(true);
     
     
-    scoreTxt.setFont(font);
-    scoreTxt.setCharacterSize(24);
-    scoreTxt.setString("Score: " + std::to_string(score));
-    scoreTxt.setColor(sf::Color::White);
+    _scoreTxt.setFont(_font);
+    _scoreTxt.setCharacterSize(24);
+    _scoreTxt.setString("Score: " + std::to_string(_score));
+    _scoreTxt.setColor(sf::Color::White);
 }
 
 void Game::run() { //This is
-    music.play();
+    bool running{false};
+    
     while (_window.isOpen()) {
-        
-        processEvents();
-        update();
-        render();
+            processEvents();
+        if(running) {
+            update();
+            render();
+        } else {
+            sf::Text prompt{"Press enter to start", _font};
+  
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)){
+                running = true;
+                _music.play();
+            }
+            
+            prompt.setPosition(200.f, 200.f);
+            
+            _window.clear();
+            _window.draw(prompt);
+            _window.display();
+        }
     }
 }
 
@@ -94,6 +110,8 @@ void Game::processEvents() {
             case sf::Event::Closed:
                 _window.close();
                 break;
+            case sf::Event::LostFocus:
+                pause = true;
             default:
                 break;
                 //Nothing to do here;
@@ -137,8 +155,8 @@ void Game::update() {
     
     /* collision */
     if(_player.getGlobalBounds().intersects(_stick.getGlobalBounds())) {
-        score++;
-        scoreTxt.setString("Score: " + std::to_string(score));
+        _score++;
+        _scoreTxt.setString("Score: " + std::to_string(_score));
         _stick.setPosition(std::rand() % (640 - static_cast<int>(_stick.getGlobalBounds().width)),
                            std::rand() % (480 - static_cast<int>(_stick.getGlobalBounds().height)));
     }
@@ -149,7 +167,7 @@ void Game::render() {
     _window.clear();
     _window.draw(_stick);
     _window.draw(_player);
-    _window.draw(scoreTxt);
+    _window.draw(_scoreTxt);
     _window.display();
 }
 
