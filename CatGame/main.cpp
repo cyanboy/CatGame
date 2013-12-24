@@ -24,7 +24,6 @@ private:
     sf::Music _music;
     
     bool _movingUp, _movingLeft, _movingDown, _movingRight;
-    bool pause;
     int _score;
 };
 
@@ -110,8 +109,6 @@ void Game::processEvents() {
             case sf::Event::Closed:
                 _window.close();
                 break;
-            case sf::Event::LostFocus:
-                pause = true;
             default:
                 break;
                 //Nothing to do here;
