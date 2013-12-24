@@ -1,12 +1,9 @@
 #include <iostream>
 #include <string>
-
 #include <ctime>
 #include <cmath>
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
-
 #include "ResourcePath.hpp"
 
 class Game {
@@ -24,13 +21,13 @@ private:
     sf::Sprite _player, _stick;
     sf::Font font;
     sf::Text scoreTxt;
+    sf::Music music;
     
     bool _movingUp, _movingLeft, _movingDown, _movingRight;
     int score;
 };
 
-Game::Game()
-:
+Game::Game():
 _window(sf::VideoMode(640,480), "CatGame"),
 _player(),
 _playerTexture(),
@@ -41,7 +38,8 @@ _movingDown(),
 _movingRight(),
 font(),
 score(),
-scoreTxt()
+scoreTxt(),
+music()
 {
     if (!_playerTexture.loadFromFile(resourcePath() + "player.png") ){
         //errno
@@ -55,11 +53,17 @@ scoreTxt()
         //errno
     }
     
+    if(!music.openFromFile(resourcePath() + "music.ogg") ) {
+        //errno
+    }
+    
     _player.setTexture(_playerTexture);
     _stick.setTexture(_stickTexture);
     _player.setPosition(100.f, 100.f);
     _stick.setPosition(rand() % 630-35, rand() % 470-35);
     _window.setFramerateLimit(50);
+    music.setLoop(true);
+    
     
     scoreTxt.setFont(font);
     scoreTxt.setCharacterSize(24);
@@ -68,7 +72,9 @@ scoreTxt()
 }
 
 void Game::run() { //This is
+    music.play();
     while (_window.isOpen()) {
+        
         processEvents();
         update();
         render();
@@ -133,10 +139,8 @@ void Game::update() {
     if(_player.getGlobalBounds().intersects(_stick.getGlobalBounds())) {
         score++;
         scoreTxt.setString("Score: " + std::to_string(score));
-        _stick.setPosition( //Make sure the stick does not move out of bounds
-            std::rand() % (640 - static_cast<int>(_stick.getGlobalBounds().width)),
-            std::rand() % (480 - static_cast<int>(_stick.getGlobalBounds().height))
-        );
+        _stick.setPosition(std::rand() % (640 - static_cast<int>(_stick.getGlobalBounds().width)),
+                           std::rand() % (480 - static_cast<int>(_stick.getGlobalBounds().height)));
     }
 
 }
