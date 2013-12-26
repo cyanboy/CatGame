@@ -4,7 +4,13 @@
 #include <cmath>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+
+#ifdef DONT_USE_RESOURCEPATH
+    std::string resourcePath() { return std::string(); }
+#else
 #include "ResourcePath.hpp"
+#endif
+
 
 class Game {
 public:
@@ -72,7 +78,6 @@ _sound()
     _stick.setPosition(rand() % 630-35, rand() % 470-35);
     _window.setFramerateLimit(50);
     _music.setLoop(true);
-    
     
     _scoreTxt.setFont(_font);
     _scoreTxt.setCharacterSize(24);
