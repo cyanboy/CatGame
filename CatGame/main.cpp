@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <iomanip>
+#include <sstream>
 #include <ctime>
 #include <cmath>
 #include <SFML/Graphics.hpp>
@@ -26,13 +28,13 @@ private:
     sf::Texture _playerTexture, _stickTexture;
     sf::Sprite _player, _stick;
     sf::Font _font;
-    sf::Text _scoreTxt;
+    sf::Text _scoreTxt, _timeTxt;
     sf::Music _music;
     sf::SoundBuffer _buffer;
     sf::Sound _sound;
     
     bool _movingUp, _movingLeft, _movingDown, _movingRight;
-    int _score;
+    int _score, _highScore;
 };
 
 Game::Game():
@@ -46,7 +48,9 @@ _movingDown(),
 _movingRight(),
 _font(),
 _score(),
+_highScore(),
 _scoreTxt(),
+_timeTxt(),
 _music(),
 _buffer(),
 _sound()
@@ -74,31 +78,87 @@ _sound()
     _sound.setBuffer(_buffer);
     _player.setTexture(_playerTexture);
     _stick.setTexture(_stickTexture);
-    _player.setPosition(100.f, 100.f);
+    _player.setPosition(640.f/2 - _player.getGlobalBounds().width, 480.f/2 - _player.getGlobalBounds().height);
     _stick.setPosition(rand() % 630-35, rand() % 470-35);
     _window.setFramerateLimit(50);
     _music.setLoop(true);
     
     _scoreTxt.setFont(_font);
-    _scoreTxt.setCharacterSize(24);
     _scoreTxt.setString("Score: " + std::to_string(_score));
     _scoreTxt.setColor(sf::Color::White);
+    _scoreTxt.setPosition(10.f, 10.f);
+    
+    _timeTxt.setFont(_font);
+    _timeTxt.setColor(sf::Color::White);
+    _timeTxt.setPosition(550,10);
 }
 
 void Game::run() { //This is
     bool running{false};
     
+    sf::Clock clock{};
+    sf::Time start{};
+    sf::Time end { sf::seconds(90) };
+    
     while (_window.isOpen()) {
             processEvents();
         if(running) {
+            start = clock.getElapsedTime();
             update();
+            
+            std::ostringstream t;
+            
+            int teim = static_cast<int>(end.asSeconds() - start.asSeconds()+1);
+            
+            t << std::setprecision(2)
+                << std::setfill('0') << std::setw(2)
+                << teim/60 << ":" << std::setfill('0')
+                << std::setw(2) << teim % 60;
+            
+            _timeTxt.setString(t.str());
+           
             render();
+            
+            
+            if(start >= end) {
+                running = false;
+            }
+            
+        } else if(start >= end) {
+            _music.stop();
+            _window.clear();
+            
+            std::string hss{"SCORE: " + std::to_string(_score) + "\nHIGHSCORE: " + std::to_string(_highScore) + "\nPRESS ENTER TO RESTART"}; //highscore string
+            
+            if(_score > _highScore) {
+                _highScore = _score;
+            }
+            
+            
+            sf::Text hsTxt{hss, _font}; //highscorer text
+            hsTxt.setPosition(200.f, 200.f);
+            
+            _window.draw(hsTxt);
+            
+            _window.display();
+            
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)){
+                _music.play();
+                start = clock.getElapsedTime();
+                clock.restart();
+                _score = 0;
+                _scoreTxt.setString("SCORE: " + std::to_string(_score));
+                continue;
+            }
+            
         } else {
             sf::Text prompt{"Press enter to start", _font};
   
             if(sf::Keyboard::isKeyPressed(sf::Keyboard::Return)){
                 running = true;
                 _music.play();
+                start = clock.getElapsedTime();
+                clock.restart();
             }
             
             prompt.setPosition(200.f, 200.f);
@@ -180,6 +240,7 @@ void Game::render() {
     _window.draw(_stick);
     _window.draw(_player);
     _window.draw(_scoreTxt);
+    _window.draw(_timeTxt);
     _window.display();
 }
 
